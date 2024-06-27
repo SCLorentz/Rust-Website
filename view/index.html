@@ -5,6 +5,8 @@
     <title>Hello World - Rust</title>
   </head>
   <body>
+    <header>Rok</header>
+    <p id="here"></p>
     <script type="module">
         // Import our outputted wasm ES6 module
         // Which, export default's, an initialization function
@@ -12,13 +14,11 @@
 
         const runWasm = async () => {
         // Instantiate our wasm module
-        const helloWorld = await init("/pkg/rok_page_bg.wasm");
-
-        // Call the Add function export from wasm, save the result
-        const addResult = helloWorld.add(24, 24);
+        const helloWorld = await init("/pkg/rok_page_bg.wasm"),
+        addResult = helloWorld.add(24, 24);   // Call the Add function export from wasm, save the result
 
         // Set the result onto the body
-        document.body.textContent = `Hello World! addResult: ${addResult}`;
+        document.getElementById("here").textContent = `Hello World! addResult: ${addResult}`;
         };
         runWasm();
     </script>
