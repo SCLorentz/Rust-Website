@@ -1,35 +1,33 @@
-use std::{
-    fs,
-    io::{prelude::*, BufReader},
-    net::{TcpListener, TcpStream},
-};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+use actix_files::NamedFile;
+use actix_web::HttpRequest;
+use std::path::PathBuf;
 
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        handle_connection(stream);
-    }
+#[get("/")]
+async fn index(req: HttpRequest) -> actix_web::Result<NamedFile> {
+    let path: PathBuf = req.match_info().query("index").parse().unwrap();
+    Ok(NamedFile::open(path)?)
 }
 
-fn handle_connection(mut stream: TcpStream) {
-    let buf_reader = BufReader::new(&mut stream);
-    let http_request: Vec<_> = buf_reader
-        .lines()
-        .map(|result| result.unwrap())
-        .take_while(|line| !line.is_empty())
-        .collect();
+#[post("/echo")]
+async fn echo(req_body: String) -> impl Responder {
+    HttpResponse::Ok().body(req_body)
+}
 
-    let status_line = "HTTP/1.1 200 OK";
-    let contents = fs::read_to_string("./view/index.html").unwrap();
-    let length = contents.len();
+async fn manual_hello() -> impl Responder {
+    HttpResponse::Ok().body("Hey there!")
+}
 
-    let response =
-        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
-
-    stream.write_all(response.as_bytes()).unwrap();
-
-    //println!("Request: {http_request:#?}");
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .service(index)
+            .service(echo)
+            .route("/hey", web::get().to(manual_hello))
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
 }
