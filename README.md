@@ -15,3 +15,5 @@
 `wasm-pack build --target web` --> build the wasm file
 
 `cargo run` --> open the server
+
+`/home/sclorentz/Downloads/upx-4.2.4-amd64_linux/upx --best --lzma target/debug/rok-page` --> compact the compiled file

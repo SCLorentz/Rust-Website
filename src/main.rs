@@ -1,9 +1,12 @@
+use std::alloc::System;
+
+#[global_allocator]
+static A: System = System;
+
 use std::{
     fs,
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
-    //thread,
-    //time::Duration,
 };
 
 fn main() {
@@ -14,27 +17,41 @@ fn main() {
 
         handle_connection(stream);
     }
+    
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let buf_reader = BufReader::new(&mut stream);
-    let request_line = buf_reader.lines().next().unwrap().unwrap();
-    let status_line = "HTTP/1.1 200 OK";
+    //
+    let (request_line, status_line) = (
+        // request_line
+        BufReader::new(&mut stream).lines().next().unwrap().unwrap(), 
+        // status_line
+        "HTTP/1.1 200 OK"
+    );
 
     let mut request = |response: &str, mut status: &str| {
-        let contents = fs::read_to_string(response).unwrap();
-        let length = contents.len();
+        // prevent panic
+        let contents = match fs::read_to_string(response) {
+            Ok(contents) => contents,
+            Err(_) => {
+                return {
+                    let response = format!("HTTP/1.1 404 NOT FOUND\r\n\r\n{}",
+                        fs::read_to_string("./static/404.html").unwrap()
+                    );
+                    //
+                    stream.write_all(response.as_bytes()).unwrap();
+                }
+            }
+        };
 
         if status.is_empty() {
             status = status_line;
         }
 
-        let response = format!("{}\r\nContent-Length: {}\r\n\r\n{}", status, length, contents);
+        let response = format!("{}\r\n\r\n{}", status, contents);
 
         stream.write_all(response.as_bytes()).unwrap();
     };
-
-    //println!("{:?}", request_line);
     
     match &request_line[..] {
         // Main page
@@ -42,9 +59,9 @@ fn handle_connection(mut stream: TcpStream) {
         // Download page
         "GET /download HTTP/1.1" => request("./static/download.html", ""),
         // script js
-        "GET /pkg/rok_page.js HTTP/1.1" => request("./pkg/rok_page.js", ""),
+        "GET /script HTTP/1.1" => request("./pkg/rok_page.js", ""),
         // script wasm
-        "GET /pkg/rok_page_bg.wasm HTTP/1.1" => request("./pkg/rok_page_bg.wasm", ""),
+        "GET /wasm HTTP/1.1" => request("./pkg/rok_page_bg.wasm", ""),
         // not found
         _ => request("./static/404.html", "HTTP/1.1 404 NOT FOUND"),
     }
