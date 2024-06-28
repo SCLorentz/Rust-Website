@@ -36,7 +36,7 @@ fn handle_connection(mut stream: TcpStream) {
             Err(_) => {
                 return {
                     let response = format!("HTTP/1.1 404 NOT FOUND\r\n\r\n{}",
-                        fs::read_to_string("./static/404.html").unwrap()
+                        fs::read_to_string("./static/err/404.html").unwrap()
                     );
                     //
                     stream.write_all(response.as_bytes()).unwrap();
@@ -57,7 +57,7 @@ fn handle_connection(mut stream: TcpStream) {
         // Main page
         "GET / HTTP/1.1" => request("./static/index.html", ""),
         // Download page
-        "GET /download HTTP/1.1" => request("./static/download.html", ""),
+        "GET /download HTTP/1.1" => request("./static/pages/download.html", ""),
         // script js
         "GET /script HTTP/1.1" => request("./pkg/rok_page.js", ""),
         // script wasm
