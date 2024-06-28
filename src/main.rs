@@ -75,3 +75,5 @@ fn handle_connection(mut stream: TcpStream) {
         _ => request("./static/404.html", "HTTP/1.1 404 NOT FOUND", ""),
     }
 }
+
+// cara, o nome do commit ficou mt bom "vey",  se fude essa porra, to rindo muito, mas isso não faz com que não seja verdade, infelismente
