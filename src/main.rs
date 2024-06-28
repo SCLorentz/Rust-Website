@@ -29,7 +29,7 @@ fn handle_connection(mut stream: TcpStream) {
         "HTTP/1.1 200 OK"
     );
 
-    let mut request = |response: &str, mut status: &str| {
+    let mut request = |response: &str, mut status: &str, r#type: &str| {
         // prevent panic
         let contents = match fs::read_to_string(response) {
             Ok(contents) => contents,
@@ -48,21 +48,30 @@ fn handle_connection(mut stream: TcpStream) {
             status = status_line;
         }
 
-        let response = format!("{}\r\n\r\n{}", status, contents);
+        //let response = format!("{}\r\n\r\n{}", status, contents);
 
+        //stream.write_all(response.as_bytes()).unwrap();
+        let content_type = match r#type {
+            "wasm" => "application/wasm", // Set Content-Type for WASM
+            "js" => "text/javascript",
+            _ => "text/html", // Default content type
+        };
+    
+        let response = format!("{}\r\nContent-Type: {}\r\n\r\n{}", status, content_type, contents);
+    
         stream.write_all(response.as_bytes()).unwrap();
     };
     
     match &request_line[..] {
         // Main page
-        "GET / HTTP/1.1" => request("./static/index.html", ""),
+        "GET / HTTP/1.1" => request("./static/index.html", "", ""),
         // Download page
-        "GET /download HTTP/1.1" => request("./static/pages/download.html", ""),
+        "GET /download HTTP/1.1" => request("./static/pages/download.html", "", ""),
         // script js
-        "GET /script HTTP/1.1" => request("./pkg/rok_page.js", ""),
+        "GET /script HTTP/1.1" => request("./pkg/rok_page.js", "", "js"),
         // script wasm
-        "GET /wasm HTTP/1.1" => request("./pkg/rok_page_bg.wasm", ""),
+        "GET /wasm HTTP/1.1" => request("./pkg/rok_page_bg.wasm", "", "wasm"),
         // not found
-        _ => request("./static/404.html", "HTTP/1.1 404 NOT FOUND"),
+        _ => request("./static/404.html", "HTTP/1.1 404 NOT FOUND", ""),
     }
 }
