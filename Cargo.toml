@@ -8,6 +8,4 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-actix-files = "0.6.6"
-actix-web = "4.8.0"
 wasm-bindgen = "0.2"
