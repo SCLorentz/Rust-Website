@@ -12,12 +12,11 @@
 
 ## Commands
 
-`wasm-pack build --target web` --> build the wasm file
+use `./build.sh` to build and start the server
 
-`cargo run` --> open the server
+if this dosen't work, use `chmod +x build.sh`
 
 `/home/sclorentz/Downloads/upx-4.2.4-amd64_linux/upx --best --lzma target/debug/rok-page` --> compact the compiled file
-
 
 ## Input do terminal
 

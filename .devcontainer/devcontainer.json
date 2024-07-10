@@ -1,0 +1,9 @@
+{
+    "name": "Ambiente de Desenvolvimento Rust",
+    "image": "mcr.microsoft.com/devcontainers/rust:latest",
+    "extensions": [
+      "rust-lang.rust-analyzer",
+      "eamodio.gitlens",
+      "seepine.md-editor"
+    ]
+}
