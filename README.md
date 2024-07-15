@@ -1,14 +1,4 @@
-# RockScript Website
-
-## some ideas for domains:
-
-- rockscript.code
-- rockscript.dev
-
-## subdomains
-
-- help.rockscript.dev
-- awesome.rockscript.dev
+# Rust made website
 
 ## Commands
 
@@ -16,7 +6,7 @@ use `./build.sh` to build and start the server
 
 if this dosen't work, use `chmod +x build.sh`
 
-`/home/sclorentz/Downloads/upx-4.2.4-amd64_linux/upx --best --lzma target/debug/rok-page` --> compact the compiled file
+`upx --best --lzma target/debug/awesome` --> compact the compiled file
 
 ## Input do terminal
 
