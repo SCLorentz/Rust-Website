@@ -11,17 +11,21 @@
     <script type="module">
         // Import our outputted wasm ES6 module
         // Which, export default's, an initialization function
-        import init from "/script";
+        import init, { add } from "/script";
 
-        const runWasm = async () => {
-        // Instantiate our wasm module
-        const helloWorld = await init("/wasm"),
-        addResult = helloWorld.add(24, 24);   // Call the Add function export from wasm, save the result
+        init().then(() => {
+          console.log(add(24, 24))
+        });
 
-        // Set the result onto the body
-        document.getElementById("here").textContent = `Hello World! addResult: ${addResult}`;
+        /*const runWasm = async () => {
+          // Instantiate our wasm module
+          const helloWorld = await init("/wasm"),
+          addResult = helloWorld.add(24, 24);   // Call the Add function export from wasm, save the result
+
+          // Set the result onto the body
+          document.getElementById("here").textContent = `Hello World! addResult: ${addResult}`;
         };
-        runWasm();
+        runWasm();*/
     </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 echo "building wasm"
 
-wasm-pack build --target web
+cargo install wasm-pack
+wasm-pack build --target web --out-dir ./static/script
 
 echo "builded..."
 echo "starting server"

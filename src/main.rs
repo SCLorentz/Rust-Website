@@ -68,9 +68,9 @@ fn handle_connection(mut stream: TcpStream) {
         // Download page
         "GET /download HTTP/1.1" => request("./static/pages/download.html", "", ""),
         // script js
-        "GET /script HTTP/1.1" => request("./pkg/rok_page.js", "", "js"),
+        "GET /script HTTP/1.1" => request("./static/awesome.js", "", "js"),
         // script wasm
-        "GET /wasm HTTP/1.1" => request("./pkg/rok_page_bg.wasm", "", "wasm"),
+        "GET /wasm HTTP/1.1" => request("./static/awesome_bg.wasm", "", "wasm"),
         // not found
         _ => request("./static/404.html", "HTTP/1.1 404 NOT FOUND", ""),
     }
